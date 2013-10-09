@@ -2,6 +2,7 @@
 #include <v8.h>
 #include <leveldb/db.h>
 #include <leveldb/write_batch.h>
+#include <leveldb/filter_policy.h>
 
 #include "leveled.h"
 #include "batch.h"
@@ -624,6 +625,8 @@ Leveled::Leveled(char* path) {
 
   leveldb::Options options;
   options.create_if_missing = true;
+  options.filter_policy = leveldb::NewBloomFilterPolicy(10);
+
   leveldb::Status status = leveldb::DB::Open(options, path, &db);
 
   if (!status.ok()) {
